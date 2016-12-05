@@ -37,6 +37,7 @@ MESH TO LOAD
 #define MESH_NAME "ground.3ds"
 #define MESH_NAME_2 "d1.DAE"
 #define MESH_NAME_3 "T_REX.3DS"
+#define MESH_NAME_4 "cactus.3ds"
 /*----------------------------------------------------------------------------
 ----------------------------------------------------------------------------*/
 
@@ -223,6 +224,7 @@ void generateObjectBufferMesh() {
 	load_mesh(MESH_NAME_2);
 	load_mesh(MESH_NAME_3);
 	load_mesh(MESH_NAME);
+	load_mesh(MESH_NAME_4);
 	unsigned int vp_vbo = 0;
 	loc1 = glGetAttribLocation(shaderProgramID, "vertex_position");
 	loc2 = glGetAttribLocation(shaderProgramID, "vertex_normal");
@@ -230,11 +232,11 @@ void generateObjectBufferMesh() {
 
 	glGenBuffers(1, &vp_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vp_vbo);
-	glBufferData(GL_ARRAY_BUFFER, (g_point_counts[0] + g_point_counts[1] + g_point_counts[2]) * 3 * sizeof(float), &g_vp[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (g_point_counts[0] + g_point_counts[1] + g_point_counts[2] + g_point_counts[3]) * 3 * sizeof(float), &g_vp[0], GL_STATIC_DRAW);
 	unsigned int vn_vbo = 0;
 	glGenBuffers(1, &vn_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vn_vbo);
-	glBufferData(GL_ARRAY_BUFFER, (g_point_counts[0] + g_point_counts[1] + g_point_counts[2]) * 3 * sizeof(float), &g_vn[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (g_point_counts[0] + g_point_counts[1] + g_point_counts[2] + g_point_counts[3]) * 3 * sizeof(float), &g_vn[0], GL_STATIC_DRAW);
 
 	//	This is for texture coordinates which you don't currently need, so I have commented it out
 	unsigned int vt_vbo = 0;
@@ -302,10 +304,17 @@ void display() {
 	//up obstacle
 	mat4 model4 = identity_mat4();
 	model4 = scale(model4, vec3(0.009f, 0.009f, 0.009f));
-	model4 = translate(model4, vec3(0.0, 5.0, 0.7));
+	model4 = translate(model4, vec3(0.0, 8.0, 0.7));
 	model4 = rotate_z_deg(model4, 90.0f);
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model4.m);
 	glDrawArrays(GL_TRIANGLES, 0, g_point_counts[0]);
+
+	//cactus obstacle
+	mat4 model3 = identity_mat4();
+	model3 = scale(model3, vec3(0.009f, 0.009f, 0.009f));
+	model3 = translate(model3, vec3(-60.0, 0.0, 0.0));
+	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
+	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1] + g_point_counts[2], g_point_counts[3]);
 
 	//dinosaur
 	mat4 model5 = identity_mat4();
@@ -313,8 +322,6 @@ void display() {
 	model5 = scale(model5, vec3(0.1f, 0.1f, 0.1f));
 	model5 = rotate_z_deg(model5, 90.0f);
 	model5 = translate(model5, vec3(rexX, rexY, rexZ));
-	// global of the child is got by pre-multiplying the local of the child by the global of the parent
-	// update uniform & draw
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model5.m);
 	glDrawArrays(GL_TRIANGLES, g_point_counts[0], g_point_counts[1]);
 
@@ -417,7 +424,7 @@ int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(width, height);
-	glutCreateWindow("Hello Triangle");
+	glutCreateWindow("Offline mode");
 
 	// Tell glut where the display function is
 	glutDisplayFunc(display);
