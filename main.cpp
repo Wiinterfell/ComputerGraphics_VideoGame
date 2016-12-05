@@ -288,7 +288,8 @@ void display() {
 	mat4 view = identity_mat4();
 	mat4 persp_proj = perspective(45.0, (float)width / (float)height, 0.1, 100.0);
 	mat4 model = identity_mat4();
-	model = scale(model, vec3(100.0f, 100.0f, 1.0f));
+
+	model = scale(model, vec3(100.0f, 0.2f, 1.0f));
 	view = look_at(vec3(rexX - 1.0, 0.0f + rexY, 0.5f + rexZ), vec3(rexX, rexY, rexZ + 0.5f), vec3(0.0f, 0.0f, 1.0f));
 	view = translate(view, vec3(xTranslation, yTranslation, zTranslation));
 	view = rotate_x_deg(view, xRotation);
