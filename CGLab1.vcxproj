@@ -27,21 +27,6 @@
     <ClInclude Include="teapot.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Debug\3d-model.dae" />
-    <None Include="Debug\Budynek5.dae" />
-    <None Include="Debug\Cartoon land.3DS" />
-    <None Include="Debug\cartoon.3ds" />
-    <None Include="Debug\cave-webgl.dae" />
-    <None Include="Debug\clock-tower.dae" />
-    <None Include="Debug\Free Cartoon Land 2.dae" />
-    <None Include="Debug\monkeyhead.dae" />
-    <None Include="Debug\mountains.dae" />
-    <None Include="Debug\Simple mug.dae" />
-    <None Include="Debug\Tree Type1 04.dae" />
-    <None Include="Debug\turbosquid_environment.mb" />
-    <None Include="Debug\untitled7.dae" />
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="Shaders\simpleFragmentShader.txt" />
     <Text Include="Shaders\simpleVertexShader.txt" />
   </ItemGroup>

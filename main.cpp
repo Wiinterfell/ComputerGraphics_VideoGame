@@ -23,6 +23,12 @@ float xRotation = 0.0f;
 float yRotation = 0.0f;
 float zRotation = 0.0f;
 
+float rexX = 0.0f;
+float rexY = 0.0f;
+float rexZ = 0.0f;
+float jumpSpeed = 0.0f;
+
+
 /*----------------------------------------------------------------------------
 MESH TO LOAD
 ----------------------------------------------------------------------------*/
@@ -30,7 +36,7 @@ MESH TO LOAD
 // put the mesh in your project directory, or provide a filepath for it here
 #define MESH_NAME "cartoon.3ds"
 #define MESH_NAME_2 "deer-3ds.3ds"
-#define MESH_NAME_3 "cat.3ds"
+#define MESH_NAME_3 "T_REX.3DS"
 /*----------------------------------------------------------------------------
 ----------------------------------------------------------------------------*/
 
@@ -279,7 +285,7 @@ void display() {
 	mat4 persp_proj = perspective(45.0, (float)width / (float)height, 0.1, 100.0);
 	mat4 model = identity_mat4();
 	//model = rotate_z_deg(model, rotate_y);
-	view = look_at(vec3(0.0f, 0.0f, 5.0f), vec3(20000.0f, 0.0f, 5.0f), vec3(0.0f, 0.0f, 1.0f));
+	view = look_at(vec3(rexX - 1.0, 0.0f + rexY, 1.0f + rexZ), vec3(rexX, rexY, rexZ+1.0), vec3(0.0f, 0.0f, 1.0f));
 	view = translate(view, vec3(xTranslation, yTranslation, zTranslation));
 	view = rotate_x_deg(view, xRotation);
 	view = rotate_y_deg(view, yRotation);
@@ -294,33 +300,12 @@ void display() {
 	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1], g_point_counts[2]);
 
 
-
-	//second object
-	mat4 model2 = identity_mat4();
-	model2 = rotate_z_deg(model2, rotate_y / 100.0f);
-	model2 = translate(model2, vec3(100.0, 9.0, 15.0));
-	model2 = scale(model2, vec3(0.15f, 0.15f, 0.15f));
-
-	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model2.m);
-	glDrawArrays(GL_TRIANGLES, 0, g_point_counts[0]);
-
-	//third object
-	mat4 model3 = model2;
-	model3 = translate(model3, vec3(0.0, 6.0, 0.0));
-	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
-	glDrawArrays(GL_TRIANGLES, 0, g_point_counts[0]);
-
-
-	//fourth object
-	mat4 model4 = identity_mat4();
-	model4 = translate(model4, vec3(100.0, 20.0, 15.0));
-	model4 = scale(model4, vec3(0.15f, 0.15f, 0.15f));
-	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model4.m);
-	glDrawArrays(GL_TRIANGLES, 0, g_point_counts[0]);
-
-	//fourth object
+	//dinosaur
 	mat4 model5 = identity_mat4();
-	model5 = translate(model5, vec3(-15.0, 9.0, 0.0));
+	model5 = translate(model5, vec3(0.0, -10.0, 0.0));
+	model5 = scale(model5, vec3(0.2f, 0.2f, 0.2f));
+	model5 = rotate_z_deg(model5, 90.0f);
+	model5 = translate(model5, vec3(rexX, rexY, rexZ));
 	// global of the child is got by pre-multiplying the local of the child by the global of the parent
 	// update uniform & draw
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model5.m);
@@ -341,8 +326,17 @@ void updateScene() {
 		delta = 0.03f;
 	last_time = curr_time;
 
-	// rotate the model slowly around the y axis
-	rotate_y += 0.2f;
+	//the dinosaur is moving
+	rexX += 0.01;
+	rexZ += jumpSpeed;
+	if (rexZ > 0)
+	{
+		jumpSpeed -= 0.001f;
+	}
+	else
+	{
+		jumpSpeed = 0.0;
+	}
 	// Draw the next frame
 	glutPostRedisplay();
 }
@@ -361,7 +355,7 @@ void init()
 void keypress(unsigned char key, int x, int y) {
 	switch (key) {
 		//----------- REINITIALISATION -----------//
-	case ' ':
+	case 'w':
 		xTranslation = 0.0f;
 		yTranslation = 0.0f;
 		zTranslation = 0.0f;
@@ -398,7 +392,15 @@ void keypress(unsigned char key, int x, int y) {
 	case '4':
 		zRotation -= 0.6f;
 		break;
-		
+	case '+':
+		rexX += 0.1f;
+		break;
+	case '-':
+		rexX -= 0.1f;
+		break;
+	case ' ':
+		jumpSpeed = 0.1f;
+		break;
 	}
 }
 
