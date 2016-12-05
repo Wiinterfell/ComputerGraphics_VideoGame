@@ -23,7 +23,7 @@ float xRotation = 0.0f;
 float yRotation = 0.0f;
 float zRotation = 0.0f;
 
-float rexX = 0.0f;
+float rexX = -80.0f;
 float rexY = 0.0f;
 float rexZ = 0.0f;
 float jumpSpeed = 0.0f;
@@ -34,8 +34,8 @@ MESH TO LOAD
 ----------------------------------------------------------------------------*/
 // this mesh is a dae file format but you should be able to use any other format too, obj is typically what is used
 // put the mesh in your project directory, or provide a filepath for it here
-#define MESH_NAME "cartoon.3ds"
-#define MESH_NAME_2 "deer-3ds.3ds"
+#define MESH_NAME "ground.3ds"
+#define MESH_NAME_2 "d1.DAE"
 #define MESH_NAME_3 "T_REX.3DS"
 /*----------------------------------------------------------------------------
 ----------------------------------------------------------------------------*/
@@ -284,8 +284,8 @@ void display() {
 	mat4 view = identity_mat4();
 	mat4 persp_proj = perspective(45.0, (float)width / (float)height, 0.1, 100.0);
 	mat4 model = identity_mat4();
-	//model = rotate_z_deg(model, rotate_y);
-	view = look_at(vec3(rexX - 1.0, 0.0f + rexY, 1.0f + rexZ), vec3(rexX, rexY, rexZ+1.0), vec3(0.0f, 0.0f, 1.0f));
+	model = scale(model, vec3(100.0f, 100.0f, 1.0f));
+	view = look_at(vec3(rexX - 1.0, 0.0f + rexY, 0.5f + rexZ), vec3(rexX, rexY, rexZ + 0.5f), vec3(0.0f, 0.0f, 1.0f));
 	view = translate(view, vec3(xTranslation, yTranslation, zTranslation));
 	view = rotate_x_deg(view, xRotation);
 	view = rotate_y_deg(view, yRotation);
@@ -299,11 +299,19 @@ void display() {
 
 	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1], g_point_counts[2]);
 
+	//up obstacle
+	mat4 model4 = identity_mat4();
+
+	model4 = scale(model4, vec3(0.005f, 0.005f, 0.005f));
+	model4 = translate(model4, vec3(0.0, 5.0, 0.5));
+	model4 = rotate_z_deg(model4, 90.0f);
+	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model4.m);
+	glDrawArrays(GL_TRIANGLES, 0, g_point_counts[0]);
 
 	//dinosaur
 	mat4 model5 = identity_mat4();
 	model5 = translate(model5, vec3(0.0, -10.0, 0.0));
-	model5 = scale(model5, vec3(0.2f, 0.2f, 0.2f));
+	model5 = scale(model5, vec3(0.1f, 0.1f, 0.1f));
 	model5 = rotate_z_deg(model5, 90.0f);
 	model5 = translate(model5, vec3(rexX, rexY, rexZ));
 	// global of the child is got by pre-multiplying the local of the child by the global of the parent
@@ -399,7 +407,7 @@ void keypress(unsigned char key, int x, int y) {
 		rexX -= 0.1f;
 		break;
 	case ' ':
-		jumpSpeed = 0.1f;
+		jumpSpeed = 0.3f;
 		break;
 	}
 }
