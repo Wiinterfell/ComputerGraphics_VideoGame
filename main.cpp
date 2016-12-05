@@ -273,14 +273,16 @@ void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
 
+	//Light
+	int light_pos = glGetUniformLocation(shaderProgramID, "light_pos");
+	glUniform3f(light_pos, rexX, rexY, rexZ + 5.0);
 
 	//Declare your uniform variables that will be used in your shader
 	int matrix_location = glGetUniformLocation(shaderProgramID, "model");
 	int view_mat_location = glGetUniformLocation(shaderProgramID, "view");
 	int proj_mat_location = glGetUniformLocation(shaderProgramID, "proj");
 
-
-	// Root of the Hierarchy
+	//Ground
 	mat4 view = identity_mat4();
 	mat4 persp_proj = perspective(45.0, (float)width / (float)height, 0.1, 100.0);
 	mat4 model = identity_mat4();
@@ -290,8 +292,6 @@ void display() {
 	view = rotate_x_deg(view, xRotation);
 	view = rotate_y_deg(view, yRotation);
 	view = rotate_z_deg(view, zRotation);
-
-
 	// update uniforms & draw
 	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
 	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
@@ -301,9 +301,8 @@ void display() {
 
 	//up obstacle
 	mat4 model4 = identity_mat4();
-
-	model4 = scale(model4, vec3(0.005f, 0.005f, 0.005f));
-	model4 = translate(model4, vec3(0.0, 5.0, 0.5));
+	model4 = scale(model4, vec3(0.009f, 0.009f, 0.009f));
+	model4 = translate(model4, vec3(0.0, 5.0, 0.7));
 	model4 = rotate_z_deg(model4, 90.0f);
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model4.m);
 	glDrawArrays(GL_TRIANGLES, 0, g_point_counts[0]);
@@ -339,7 +338,7 @@ void updateScene() {
 	rexZ += jumpSpeed;
 	if (rexZ > 0)
 	{
-		jumpSpeed -= 0.001f;
+		jumpSpeed -= 0.0005f;
 	}
 	else
 	{
@@ -407,7 +406,7 @@ void keypress(unsigned char key, int x, int y) {
 		rexX -= 0.1f;
 		break;
 	case ' ':
-		jumpSpeed = 0.3f;
+		jumpSpeed = 0.19f;
 		break;
 	}
 }
