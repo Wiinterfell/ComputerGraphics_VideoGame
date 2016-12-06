@@ -325,7 +325,7 @@ void display() {
 	mat4 persp_proj = perspective(45.0, (float)width / (float)height, 0.1, 100.0);
 	mat4 model = identity_mat4();
 
-	model = scale(model, vec3(100.0f, 0.2f, 1.0f));
+	model = scale(model, vec3(100.0f, 0.05f, 1.0f));
 	model = translate(model, vec3(0.0f, 0.0f, 3.7f));
 	view = look_at(vec3(rexX - 1.0f, 0.0f + rexY, 0.5f + rexZ), vec3(rexX, rexY, rexZ + 0.5f), vec3(0.0f, 0.0f, 1.0f));
 	view = translate(view, vec3(xTranslation, yTranslation, zTranslation));
@@ -339,6 +339,8 @@ void display() {
 
 	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1], g_point_counts[2]);
 	
+
+
 	//cactus obstacle
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthCactus, heightCactus, 0, GL_RGB, GL_UNSIGNED_BYTE, imageCactus);
 
@@ -349,15 +351,15 @@ void display() {
 	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1] + g_point_counts[2], g_point_counts[3]);
 
 
+
 	//up obstacle
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthRex, heightRex, 0, GL_RGB, GL_UNSIGNED_BYTE, imageRex);
 	mat4 model4 = identity_mat4();
 	model4 = scale(model4, vec3(0.009f, 0.009f, 0.009f));
 	model4 = rotate_z_deg(model4, 90.0f);
-	model4 = translate(model4, vec3(enemyX, enemyY, 0.7));
+	model4 = translate(model4, vec3(enemyX, enemyY, 1.5f));
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model4.m);
 	glDrawArrays(GL_TRIANGLES, 0, g_point_counts[0]);
-
 
 
 
@@ -395,7 +397,7 @@ void generateObstacles()
 	if (enemyX == 0.0f && enemyY == 0.0f)
 	{
 		enemyX = rexX + 30.0f;
-		enemyY = rexY;
+		enemyY = 0.0f;
 	}
 	else if (enemyX <= rexX)
 	{
@@ -420,7 +422,7 @@ void updateScene() {
 	rexZ += jumpSpeed;
 	if (rexZ > 0)
 	{
-		jumpSpeed -= 0.0005f;
+		jumpSpeed -= 0.0004f;
 	}
 	else
 	{
@@ -428,7 +430,7 @@ void updateScene() {
 	}
 
 	//you fall
-	if (rexY >= 16.0f || rexY <= -16.0f)
+	if (rexY >= 4.0f || rexY <= -4.0f)
 	{
 		rexZ -= 0.1f;
 	}
@@ -505,14 +507,14 @@ void keypress(unsigned char key, int x, int y) {
 	case ' ':
 		if (jumpSpeed == 0.0f)
 		{
-			jumpSpeed = 0.07f;
+			jumpSpeed = 0.04f;
 		}
 		break;
 	case 'c':
-		rexY += 4.0f;
+		rexY += 1.0f;
 		break;
 	case 'v':
-		rexY -= 4.0f;
+		rexY -= 1.0f;
 		break;
 	}
 }
