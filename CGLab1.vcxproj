@@ -87,12 +87,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\glew-1.10.0\include;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\glm;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\freeglut\include;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\6\ComputerGraphics_VideoGame\soil\src;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\glew-1.10.0\include;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\glm;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\freeglut\include;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\glm;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\glew-1.10.0\lib\Release\Win32;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\freeglut\lib;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\assimp\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;freeglut.lib;glew32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\6\ComputerGraphics_VideoGame\soil\lib;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\glm;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\glew-1.10.0\lib\Release\Win32;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\freeglut\lib;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\assimp\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;freeglut.lib;glew32.lib;assimp.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -114,8 +114,8 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\glm;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\glew-1.10.0\lib\Release\Win32;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\freeglut\lib;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\assimp\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;freeglut.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\6\ComputerGraphics_VideoGame\soil\lib;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\glm;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\glew-1.10.0\lib\Release\Win32;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\freeglut\lib;D:\Documents\Insa\Dublin\Cours\CS4052 - Computer Graphics\5\ComputerGraphics_VideoGameScene\assimp\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;freeglut.lib;glew32.lib;soil.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

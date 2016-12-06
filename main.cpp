@@ -6,6 +6,8 @@
 #include <iostream>
 #include "maths_funcs.h"
 
+#include "soil\src\SOIL.h"
+
 // Assimp includes
 
 #include <assimp/cimport.h> // C importer
@@ -31,6 +33,8 @@ float rexRotationX = 0.0f;
 float rexRotationY = 0.0f;
 float rexRotationZ = 0.0f;
 
+GLuint texture[1];
+GLint uniformTexture;
 
 /*----------------------------------------------------------------------------
 MESH TO LOAD
@@ -119,6 +123,23 @@ bool load_mesh(const char* file_name) {
 }
 
 #pragma endregion MESH LOADING
+
+int LoadGLTextures()                                    // Load Bitmaps And Convert To Textures
+{
+	/* load an image file directly as a new OpenGL texture */
+	texture[0] = SOIL_load_OGL_texture("cactus1.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+	if (texture[0] == 0)
+	{
+		return false;
+	}
+
+	// Typical Texture Generation Using Data From The Bitmap
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_REPEAT);
+
+	return true;                                        // Return Success
+}
 
 // Shader Functions- click on + to expand
 #pragma region SHADER_FUNCTIONS
@@ -263,6 +284,23 @@ void generateObjectBufferMesh() {
 	//glBindBuffer (GL_ARRAY_BUFFER, vt_vbo);
 	//glVertexAttribPointer (loc3, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
+
+	GLuint tex;
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	int width, height;
+	unsigned char* image = SOIL_load_image("cactus1.png", &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	SOIL_free_image_data(image);
+
+	GLint texAttrib = glGetAttribLocation(shaderProgramID, "texcoord");
+	glEnableVertexAttribArray(texAttrib);
+	glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(5 * sizeof(float)));
 }
 
 
@@ -287,7 +325,7 @@ void display() {
 	int view_mat_location = glGetUniformLocation(shaderProgramID, "view");
 	int proj_mat_location = glGetUniformLocation(shaderProgramID, "proj");
 
-	//Ground
+	//Camera - ground
 	mat4 view = identity_mat4();
 	mat4 persp_proj = perspective(45.0, (float)width / (float)height, 0.1, 100.0);
 	mat4 model = identity_mat4();
@@ -303,8 +341,19 @@ void display() {
 	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model.m);
 
-	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1], g_point_counts[2]);
+	/*
+	int attribute_texcoord = glGetAttribLocation(shaderProgramID, "f_texcoord");
+	if (attribute_texcoord == -1) {
+		cerr << "Could not bind attribute " << "texcoord" << endl;
+		return;
+	}
+	glActiveTexture(GL_TEXTURE0);
+	int uniformTexture = glGetUniformLocation(shaderProgramID, "mytexture");
+	glUniform1i(uniformTexture, /0);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);*/
 
+	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1], g_point_counts[2]);
+	
 	//up obstacle
 	mat4 model4 = identity_mat4();
 	model4 = scale(model4, vec3(0.009f, 0.009f, 0.009f));
@@ -322,8 +371,8 @@ void display() {
 
 	//cactus obstacle
 	model3 = identity_mat4();
-	model3 = scale(model3, vec3(0.009f, 0.009f, 0.009f));
-	model3 = translate(model3, vec3(-30.0, 4.0, 0.0));
+	model3 = translate(model3, vec3(-2000.0f, 0.0f, 0.0f));
+	//model3 = scale(model3, vec3(0.009f, 0.009f, 0.009f));
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
 	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1] + g_point_counts[2], g_point_counts[3]);
 
@@ -338,7 +387,7 @@ void display() {
 	model5 = rotate_x_deg(model5, rexRotationX);
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model5.m);
 	glDrawArrays(GL_TRIANGLES, g_point_counts[0], g_point_counts[1]);
-
+	
 	glutSwapBuffers();
 }
 
@@ -381,6 +430,13 @@ void init()
 {
 	// Set up the shaders
 	GLuint shaderProgramID = CompileShaders();
+
+	/*if (!LoadGLTextures())                          // Jump To Texture Loading Routine ( NEW )
+	{
+		return;                           // If Texture Didn't Load Return FALSE ( NEW )
+	}
+	glEnable(GL_TEXTURE_2D);*/
+
 	// load mesh into a vertex buffer array
 	generateObjectBufferMesh();
 
@@ -427,6 +483,7 @@ void keypress(unsigned char key, int x, int y) {
 	case '4':
 		zRotation -= 0.6f;
 		break;
+		//----------- T REX MOTION -----------//
 	case '+':
 		rexX += 0.1f;
 		break;
@@ -451,7 +508,7 @@ int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(width, height);
-	glutCreateWindow("Offline mode");
+	glutCreateWindow("Offline game");
 
 	// Tell glut where the display function is
 	glutDisplayFunc(display);
