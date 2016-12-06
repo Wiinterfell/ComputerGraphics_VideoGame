@@ -27,6 +27,9 @@ float rexX = -80.0f;
 float rexY = 0.0f;
 float rexZ = 0.0f;
 float jumpSpeed = 0.0f;
+float rexRotationX = 0.0f;
+float rexRotationY = 0.0f;
+float rexRotationZ = 0.0f;
 
 
 /*----------------------------------------------------------------------------
@@ -317,12 +320,22 @@ void display() {
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
 	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1] + g_point_counts[2], g_point_counts[3]);
 
+	//cactus obstacle
+	model3 = identity_mat4();
+	model3 = scale(model3, vec3(0.009f, 0.009f, 0.009f));
+	model3 = translate(model3, vec3(-30.0, 4.0, 0.0));
+	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
+	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1] + g_point_counts[2], g_point_counts[3]);
+
 	//dinosaur
 	mat4 model5 = identity_mat4();
 	model5 = translate(model5, vec3(0.0, -10.0, 0.0));
 	model5 = scale(model5, vec3(0.1f, 0.1f, 0.1f));
 	model5 = rotate_z_deg(model5, 90.0f);
 	model5 = translate(model5, vec3(rexX, rexY, rexZ));
+	model5 = rotate_z_deg(model5, rexRotationZ);
+	model5 = rotate_y_deg(model5, rexRotationY);
+	model5 = rotate_x_deg(model5, rexRotationX);
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model5.m);
 	glDrawArrays(GL_TRIANGLES, g_point_counts[0], g_point_counts[1]);
 
@@ -352,6 +365,13 @@ void updateScene() {
 	{
 		jumpSpeed = 0.0;
 	}
+
+	//you fall
+	if (rexY >= 16.0f)
+	{
+		rexZ -= 0.1f;
+	}
+
 	// Draw the next frame
 	glutPostRedisplay();
 }
@@ -415,6 +435,12 @@ void keypress(unsigned char key, int x, int y) {
 		break;
 	case ' ':
 		jumpSpeed = 0.19f;
+		break;
+	case 'c':
+		rexY += 4.0f;
+		break;
+	case 'v':
+		rexY -= 4.0f;
 		break;
 	}
 }
