@@ -5,6 +5,7 @@
 #include <GL/freeglut.h>
 #include <iostream>
 #include "maths_funcs.h"
+#include <string>
 
 #include "soil\src\SOIL.h"
 
@@ -48,7 +49,7 @@ int widthCactus, heightCactus;
 int widthRex, heightRex;
 int widthGround, heightGround;
 
-
+bool lost = false;
 
 /*----------------------------------------------------------------------------
 MESH TO LOAD
@@ -299,13 +300,40 @@ void generateObjectBufferMesh() {
 
 #pragma endregion VBO_FUNCTIONS
 
+void print(int x, int y, int z, const char *string)
+{
+	//set the position of the text in the window using the x and y coordinates
+	glRasterPos2f(x, y);
+	//get the length of the string to display
+	int len = (int)strlen(string);
+
+	//loop to display character by character
+	for (int i = 0; i < len; i++)
+	{
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, string[i]);
+	}
+};
 
 void display() {
+
+	if (lost)
+	{
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glUseProgram(shaderProgramID);
+		string score = to_string((int)(rexX * 10 + 1000));
+		string scoreStr = "SCORE: " + score;
+		const char * scoreChar = scoreStr.c_str();
+		print(0.0f, 0.0f, 0.0f, scoreChar);
+		glutSwapBuffers();
+		return;
+	}
+
 
 	// tell GL to only draw onto a pixel if the shape is closer to the viewer
 	glEnable(GL_DEPTH_TEST); // enable depth-testing
 	glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.0f, 0.7f, 0.9f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(shaderProgramID);
 
@@ -375,10 +403,8 @@ void display() {
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model5.m);
 	glDrawArrays(GL_TRIANGLES, g_point_counts[0], g_point_counts[1]);
 
-
-
-	
 	glutSwapBuffers();
+
 }
 
 void generateObstacles()
@@ -407,6 +433,11 @@ void generateObstacles()
 }
 
 void updateScene() {
+
+	if (lost)
+	{
+		return;
+	}
 
 	// Placeholder code, if you want to work with framerate
 	// Wait until at least 16ms passed since start of last frame (Effectively caps framerate at ~60fps)
@@ -438,6 +469,13 @@ void updateScene() {
 	else if (rexZ <= 0.0f)
 	{
 		rexZ = 0.0f;
+	}
+
+	//game lost
+	if (rexZ <= -5.0f)
+	{
+		lost = true;
+		cout << "LOST" << endl;
 	}
 
 	generateObstacles();
@@ -508,6 +546,27 @@ void keypress(unsigned char key, int x, int y) {
 		if (jumpSpeed == 0.0f)
 		{
 			jumpSpeed = 0.04f;
+		}
+		if (lost)
+		{
+			lost = false;
+			xTranslation = 0.0f;
+			yTranslation = 0.0f;
+			zTranslation = 0.0f;
+			xRotation = 0.0f;
+			yRotation = 0.0f;
+			zRotation = 0.0f;
+			rexX = -80.0f;
+			rexY = 0.0f;
+			rexZ = 0.0f;
+			jumpSpeed = 0.0f;
+			rexRotationX = 0.0f;
+			rexRotationY = 0.0f;
+			rexRotationZ = 0.0f;
+			cactusX = 0.0f;
+			cactusY = 0.0f;
+			enemyX = 0.0f;
+			enemyY = 0.0f;
 		}
 		break;
 	case 'c':
