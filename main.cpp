@@ -33,8 +33,22 @@ float rexRotationX = 0.0f;
 float rexRotationY = 0.0f;
 float rexRotationZ = 0.0f;
 
+float cactusX = 0.0f;
+float cactusY = 0.0f;
+float enemyX = 0.0f;
+float enemyY = 0.0f;
+
 GLuint texture[1];
 GLint uniformTexture;
+
+unsigned char* imageCactus;
+unsigned char* imageRex;
+unsigned char* imageGround;
+int widthCactus, heightCactus;
+int widthRex, heightRex;
+int widthGround, heightGround;
+
+
 
 /*----------------------------------------------------------------------------
 MESH TO LOAD
@@ -123,23 +137,6 @@ bool load_mesh(const char* file_name) {
 }
 
 #pragma endregion MESH LOADING
-
-int LoadGLTextures()                                    // Load Bitmaps And Convert To Textures
-{
-	/* load an image file directly as a new OpenGL texture */
-	texture[0] = SOIL_load_OGL_texture("cactus1.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-	if (texture[0] == 0)
-	{
-		return false;
-	}
-
-	// Typical Texture Generation Using Data From The Bitmap
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_REPEAT);
-
-	return true;                                        // Return Success
-}
 
 // Shader Functions- click on + to expand
 #pragma region SHADER_FUNCTIONS
@@ -293,10 +290,10 @@ void generateObjectBufferMesh() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glGenerateMipmap(GL_TEXTURE_2D);
-	int width, height;
-	unsigned char* image = SOIL_load_image("cactus1.png", &width, &height, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-	SOIL_free_image_data(image);
+
+	imageCactus = SOIL_load_image("cactus1.png", &widthCactus, &heightCactus, 0, SOIL_LOAD_RGB);
+	imageRex = SOIL_load_image("trex.jpg", &widthRex, &heightRex, 0, SOIL_LOAD_RGB);
+	imageGround = SOIL_load_image("desert.jpg", &widthGround, &heightGround, 0, SOIL_LOAD_RGB);
 
 	GLint texAttrib = glGetAttribLocation(shaderProgramID, "texcoord");
 	glEnableVertexAttribArray(texAttrib);
@@ -326,6 +323,8 @@ void display() {
 	int proj_mat_location = glGetUniformLocation(shaderProgramID, "proj");
 
 	//Camera - ground
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthGround, heightGround, 0, GL_RGB, GL_UNSIGNED_BYTE, imageGround);
+
 	mat4 view = identity_mat4();
 	mat4 persp_proj = perspective(45.0, (float)width / (float)height, 0.1, 100.0);
 	mat4 model = identity_mat4();
@@ -344,31 +343,31 @@ void display() {
 
 	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1], g_point_counts[2]);
 	
+	//cactus obstacle
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthCactus, heightCactus, 0, GL_RGB, GL_UNSIGNED_BYTE, imageCactus);
+
+	mat4 model3 = identity_mat4();
+	model3 = scale(model3, vec3(0.009f, 0.009f, 0.009f));
+	model3 = translate(model3, vec3(cactusX, cactusY, 0.0f));
+	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
+	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1] + g_point_counts[2], g_point_counts[3]);
+
+
 	//up obstacle
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthRex, heightRex, 0, GL_RGB, GL_UNSIGNED_BYTE, imageRex);
 	mat4 model4 = identity_mat4();
 	model4 = scale(model4, vec3(0.009f, 0.009f, 0.009f));
-	model4 = translate(model4, vec3(0.0, 8.0, 0.7));
 	model4 = rotate_z_deg(model4, 90.0f);
+	model4 = translate(model4, vec3(enemyX, enemyY, 0.7));
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model4.m);
 	glDrawArrays(GL_TRIANGLES, 0, g_point_counts[0]);
 
-	//cactus obstacle
-	mat4 model3 = identity_mat4();
-	model3 = scale(model3, vec3(0.009f, 0.009f, 0.009f));
-	model3 = translate(model3, vec3(-60.0, 0.0, 0.0));
-	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
-	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1] + g_point_counts[2], g_point_counts[3]);
 
-	//cactus obstacle
-	model3 = identity_mat4();
-	model3 = translate(model3, vec3(-2000.0f, 0.0f, 0.0f));
-	//model3 = scale(model3, vec3(0.009f, 0.009f, 0.009f));
-	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
-	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1] + g_point_counts[2], g_point_counts[3]);
+
 
 	//dinosaur
 	mat4 model5 = identity_mat4();
-	model5 = translate(model5, vec3(0.0, -10.0, 0.0));
+	model5 = translate(model5, vec3(0.0, -5.0, 0.0));
 	model5 = scale(model5, vec3(0.1f, 0.1f, 0.1f));
 	model5 = rotate_z_deg(model5, 90.0f);
 	model5 = translate(model5, vec3(rexX, rexY, rexZ));
@@ -377,10 +376,37 @@ void display() {
 	model5 = rotate_x_deg(model5, rexRotationX);
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model5.m);
 	glDrawArrays(GL_TRIANGLES, g_point_counts[0], g_point_counts[1]);
+
+
+
 	
 	glutSwapBuffers();
 }
 
+void generateObstacles()
+{
+	if (cactusX == 0.0f && cactusY == 0.0f)
+	{
+		cactusX = rexX + 30.0f;
+		cactusY = rexY;
+	}
+	else if (cactusX <= rexX)
+	{
+		cactusX = 0.0f;
+		cactusY = 0.0f;
+	}
+
+	if (enemyX == 0.0f && enemyY == 0.0f)
+	{
+		enemyX = rexX + 30.0f;
+		enemyY = rexY;
+	}
+	else if (enemyX <= rexX)
+	{
+		enemyX = 0.0f;
+		enemyY = 0.0f;
+	}
+}
 
 void updateScene() {
 
@@ -406,15 +432,21 @@ void updateScene() {
 	}
 
 	//you fall
-	if (rexY >= 16.0f)
+	if (rexY >= 16.0f || rexY <= -16.0f)
 	{
 		rexZ -= 0.1f;
 	}
+	//don't miss a frame on and of jump
+	else if (rexZ <= 0.0f)
+	{
+		rexZ = 0.0f;
+	}
+
+	generateObstacles();
 
 	// Draw the next frame
 	glutPostRedisplay();
 }
-
 
 void init()
 {
@@ -475,7 +507,10 @@ void keypress(unsigned char key, int x, int y) {
 		rexX -= 0.1f;
 		break;
 	case ' ':
-		jumpSpeed = 0.19f;
+		if (jumpSpeed == 0.0f)
+		{
+			jumpSpeed = 0.17f;
+		}
 		break;
 	case 'c':
 		rexY += 4.0f;
