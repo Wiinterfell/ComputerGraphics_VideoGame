@@ -300,7 +300,7 @@ void generateObjectBufferMesh() {
 
 	GLint texAttrib = glGetAttribLocation(shaderProgramID, "texcoord");
 	glEnableVertexAttribArray(texAttrib);
-	glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(5 * sizeof(float)));
+	glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(5 * sizeof(float)));
 }
 
 
@@ -331,7 +331,8 @@ void display() {
 	mat4 model = identity_mat4();
 
 	model = scale(model, vec3(100.0f, 0.2f, 1.0f));
-	view = look_at(vec3(rexX - 1.0, 0.0f + rexY, 0.5f + rexZ), vec3(rexX, rexY, rexZ + 0.5f), vec3(0.0f, 0.0f, 1.0f));
+	model = translate(model, vec3(0.0f, 0.0f, 3.7f));
+	view = look_at(vec3(rexX - 1.0f, 0.0f + rexY, 0.5f + rexZ), vec3(rexX, rexY, rexZ + 0.5f), vec3(0.0f, 0.0f, 1.0f));
 	view = translate(view, vec3(xTranslation, yTranslation, zTranslation));
 	view = rotate_x_deg(view, xRotation);
 	view = rotate_y_deg(view, yRotation);
@@ -340,17 +341,6 @@ void display() {
 	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
 	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model.m);
-
-	/*
-	int attribute_texcoord = glGetAttribLocation(shaderProgramID, "f_texcoord");
-	if (attribute_texcoord == -1) {
-		cerr << "Could not bind attribute " << "texcoord" << endl;
-		return;
-	}
-	glActiveTexture(GL_TEXTURE0);
-	int uniformTexture = glGetUniformLocation(shaderProgramID, "mytexture");
-	glUniform1i(uniformTexture, /0);
-	glBindTexture(GL_TEXTURE_2D, texture[0]);*/
 
 	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1], g_point_counts[2]);
 	
@@ -430,12 +420,6 @@ void init()
 {
 	// Set up the shaders
 	GLuint shaderProgramID = CompileShaders();
-
-	/*if (!LoadGLTextures())                          // Jump To Texture Loading Routine ( NEW )
-	{
-		return;                           // If Texture Didn't Load Return FALSE ( NEW )
-	}
-	glEnable(GL_TEXTURE_2D);*/
 
 	// load mesh into a vertex buffer array
 	generateObjectBufferMesh();

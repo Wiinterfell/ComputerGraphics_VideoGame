@@ -10,7 +10,7 @@ in vec2 Texcoord;
 vec3 light_position_world = light_pos;
 vec3 Ls = vec3 (1.0, 1.0, 1.0); // white specular colour
 vec3 Ld = vec3 (0.7, 0.7, 0.7); // dull white diffuse light colour
-vec3 La = vec3 (0.7, 0.7, 0.7); // grey ambient colour
+vec3 La = vec3 (1.0, 1.0, 1.0); // grey ambient colour
 
 // surface reflectance
 vec3 Ks = vec3 (1.0, 1.0, 1.0); // fully reflect specular light
