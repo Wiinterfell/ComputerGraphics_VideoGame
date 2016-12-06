@@ -234,6 +234,26 @@ GLuint CompileShaders()
 // VBO Functions - click on + to expand
 #pragma region VBO_FUNCTIONS
 
+void loadTextures()
+{
+	GLuint tex; 
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	imageCactus = SOIL_load_image("cactus1.png", &widthCactus, &heightCactus, 0, SOIL_LOAD_RGB);
+	imageRex = SOIL_load_image("trex.jpg", &widthRex, &heightRex, 0, SOIL_LOAD_RGB);
+	imageGround = SOIL_load_image("desert.jpg", &widthGround, &heightGround, 0, SOIL_LOAD_RGB);
+
+	GLint texAttrib = glGetAttribLocation(shaderProgramID, "texcoord");
+	glEnableVertexAttribArray(texAttrib);
+	glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(5 * sizeof(float)));
+}
+
 void generateObjectBufferMesh() {
 	/*----------------------------------------------------------------------------
 	LOAD MESH HERE AND COPY INTO BUFFERS
@@ -259,11 +279,8 @@ void generateObjectBufferMesh() {
 	glBindBuffer(GL_ARRAY_BUFFER, vn_vbo);
 	glBufferData(GL_ARRAY_BUFFER, (g_point_counts[0] + g_point_counts[1] + g_point_counts[2] + g_point_counts[3]) * 3 * sizeof(float), &g_vn[0], GL_STATIC_DRAW);
 
-	//	This is for texture coordinates which you don't currently need, so I have commented it out
+
 	unsigned int vt_vbo = 0;
-	//glGenBuffers (1, &vt_vbo);
-	//glBindBuffer (GL_ARRAY_BUFFER, vt_vbo);
-	//glBufferData (GL_ARRAY_BUFFER, g_point_count * 2 * sizeof (float), &g_vt[0], GL_STATIC_DRAW);
 
 	unsigned int vao;
 	glGenVertexArrays(1, &vao);
@@ -276,28 +293,7 @@ void generateObjectBufferMesh() {
 	glBindBuffer(GL_ARRAY_BUFFER, vn_vbo);
 	glVertexAttribPointer(loc2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-	//	This is for texture coordinates which you don't currently need, so I have commented it out
-	//glEnableVertexAttribArray (loc3);
-	//glBindBuffer (GL_ARRAY_BUFFER, vt_vbo);
-	//glVertexAttribPointer (loc3, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-
-	GLuint tex;
-	glGenTextures(1, &tex);
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	imageCactus = SOIL_load_image("cactus1.png", &widthCactus, &heightCactus, 0, SOIL_LOAD_RGB);
-	imageRex = SOIL_load_image("trex.jpg", &widthRex, &heightRex, 0, SOIL_LOAD_RGB);
-	imageGround = SOIL_load_image("desert.jpg", &widthGround, &heightGround, 0, SOIL_LOAD_RGB);
-
-	GLint texAttrib = glGetAttribLocation(shaderProgramID, "texcoord");
-	glEnableVertexAttribArray(texAttrib);
-	glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(5 * sizeof(float)));
+	loadTextures();
 }
 
 
@@ -420,7 +416,7 @@ void updateScene() {
 	last_time = curr_time;
 
 	//the dinosaur is moving
-	rexX += 0.01;
+	rexX += 0.03;
 	rexZ += jumpSpeed;
 	if (rexZ > 0)
 	{
@@ -428,7 +424,7 @@ void updateScene() {
 	}
 	else
 	{
-		jumpSpeed = 0.0;
+		jumpSpeed = 0.0f;
 	}
 
 	//you fall
@@ -509,7 +505,7 @@ void keypress(unsigned char key, int x, int y) {
 	case ' ':
 		if (jumpSpeed == 0.0f)
 		{
-			jumpSpeed = 0.17f;
+			jumpSpeed = 0.07f;
 		}
 		break;
 	case 'c':
