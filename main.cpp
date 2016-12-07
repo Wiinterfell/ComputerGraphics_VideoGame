@@ -18,6 +18,7 @@
 #include <math.h>
 #include <vector> // STL dynamic memory.
 
+#define CACTUS_NUMBER 20
 
 float xTranslation = 0.0f;
 float yTranslation = 0.0f;
@@ -34,8 +35,8 @@ float rexRotationX = 0.0f;
 float rexRotationY = 0.0f;
 float rexRotationZ = 0.0f;
 
-float cactusX[30] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
-float cactusY[30] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+float cactusX[CACTUS_NUMBER];
+float cactusY[CACTUS_NUMBER];
 float enemyX = 0.0f;
 float enemyY = 0.0f;
 
@@ -58,7 +59,6 @@ MESH TO LOAD
 #define MESH_NAME_3 "T_REX.3DS"
 #define MESH_NAME_4 "cactus.3ds"
 
-#define CACTUS_NUMBER 30
 /*----------------------------------------------------------------------------
 ----------------------------------------------------------------------------*/
 
@@ -371,7 +371,7 @@ void display() {
 	//cactus obstacle
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthCactus, heightCactus, 0, GL_RGB, GL_UNSIGNED_BYTE, imageCactus);
 	
-	for (int i = 0; i < 30; i++) 
+	for (int i = 0; i < CACTUS_NUMBER; i++)
 	{
 		mat4 model3 = identity_mat4();
 		model3 = scale(model3, vec3(0.009f, 0.009f, 0.009f));
@@ -412,7 +412,7 @@ void display() {
 
 void generateObstacles()
 {
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < CACTUS_NUMBER; i++)
 	{
 		if (cactusX[i] == 0.0f && cactusY[i] == 0.0f)
 		{
@@ -443,7 +443,7 @@ void generateObstacles()
 
 bool collision()
 {
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < CACTUS_NUMBER; i++)
 	{
 		bool x = (cactusX[i] - rexX) < 1.3f;
 		bool y = abs(rexY - cactusY[i]) < 0.1f;
@@ -520,6 +520,12 @@ void init()
 	// Set up the shaders
 	GLuint shaderProgramID = CompileShaders();
 
+	for (int i = 0; i < CACTUS_NUMBER; i++)
+	{
+		cactusX[i] = 0.0f;
+		cactusY[i] = 0.0f;
+	}
+
 	// load mesh into a vertex buffer array
 	generateObjectBufferMesh();
 
@@ -594,7 +600,7 @@ void keypress(unsigned char key, int x, int y) {
 			rexRotationX = 0.0f;
 			rexRotationY = 0.0f;
 			rexRotationZ = 0.0f;
-			for (int i = 0; i < 30; i++)
+			for (int i = 0; i < CACTUS_NUMBER; i++)
 			{
 				cactusX[i] = 0.0f;
 				cactusY[i] = 0.0f;
