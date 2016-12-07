@@ -49,6 +49,8 @@ int widthGround, heightGround;
 
 bool lost = false;
 
+int addingScore = 0.0f;
+
 /*----------------------------------------------------------------------------
 MESH TO LOAD
 ----------------------------------------------------------------------------*/
@@ -323,6 +325,7 @@ void display() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(shaderProgramID);
 		string score = to_string((int)(rexX * 10 + 1000));
+		score += addingScore;
 		string scoreStr = "SCORE: " + score;
 		const char * scoreChar = scoreStr.c_str();
 		print(0.0f, 0.0f, 0.0f, scoreChar);
@@ -463,6 +466,11 @@ bool collision()
 		{
 			return true;
 		}
+		else if (x && y)
+		{
+			addingScore += 50.0f;
+			cout << addingScore << endl;
+		}
 	}
 	bool x = abs(rexX - enemyX) < 1.3f;
 	bool z = rexZ > 1.0f;
@@ -480,15 +488,6 @@ void updateScene() {
 	{
 		return;
 	}
-
-	// Placeholder code, if you want to work with framerate
-	// Wait until at least 16ms passed since start of last frame (Effectively caps framerate at ~60fps)
-	static DWORD  last_time = 0;
-	DWORD  curr_time = timeGetTime();
-	float  delta = (curr_time - last_time) * 0.001f;
-	if (delta > 0.03f)
-		delta = 0.03f;
-	last_time = curr_time;
 
 	//the dinosaur is moving
 	rexX += 0.03;
@@ -598,6 +597,7 @@ void keypress(unsigned char key, int x, int y) {
 		if (lost)
 		{
 			lost = false;
+			addingScore = 0.0f;
 			xTranslation = 0.0f;
 			yTranslation = 0.0f;
 			zTranslation = 0.0f;
