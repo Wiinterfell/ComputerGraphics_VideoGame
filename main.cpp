@@ -445,7 +445,7 @@ bool collision()
 {
 	for (int i = 0; i < CACTUS_NUMBER; i++)
 	{
-		bool x = (cactusX[i] - rexX) < 1.3f;
+		bool x = (cactusX[i] - rexX) < 1.3f && (cactusX[i] - rexX) > 0.9f;
 		bool y = abs(rexY - cactusY[i]) < 0.1f;
 		bool z = rexZ < 1.0f;
 		if (x && y && z)
