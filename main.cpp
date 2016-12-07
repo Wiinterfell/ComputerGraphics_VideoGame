@@ -58,6 +58,7 @@ MESH TO LOAD
 #define MESH_NAME_2 "d1.DAE"
 #define MESH_NAME_3 "T_REX.3DS"
 #define MESH_NAME_4 "cactus.3ds"
+#define MESH_NAME_5 "star.3ds"
 
 /*----------------------------------------------------------------------------
 ----------------------------------------------------------------------------*/
@@ -266,6 +267,7 @@ void generateObjectBufferMesh() {
 	load_mesh(MESH_NAME_3);
 	load_mesh(MESH_NAME);
 	load_mesh(MESH_NAME_4);
+	load_mesh(MESH_NAME_5);
 	unsigned int vp_vbo = 0;
 	loc1 = glGetAttribLocation(shaderProgramID, "vertex_position");
 	loc2 = glGetAttribLocation(shaderProgramID, "vertex_normal");
@@ -273,11 +275,11 @@ void generateObjectBufferMesh() {
 
 	glGenBuffers(1, &vp_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vp_vbo);
-	glBufferData(GL_ARRAY_BUFFER, (g_point_counts[0] + g_point_counts[1] + g_point_counts[2] + g_point_counts[3]) * 3 * sizeof(float), &g_vp[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (g_point_counts[0] + g_point_counts[1] + g_point_counts[2] + g_point_counts[3] + g_point_counts[4]) * 3 * sizeof(float), &g_vp[0], GL_STATIC_DRAW);
 	unsigned int vn_vbo = 0;
 	glGenBuffers(1, &vn_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vn_vbo);
-	glBufferData(GL_ARRAY_BUFFER, (g_point_counts[0] + g_point_counts[1] + g_point_counts[2] + g_point_counts[3]) * 3 * sizeof(float), &g_vn[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (g_point_counts[0] + g_point_counts[1] + g_point_counts[2] + g_point_counts[3] + g_point_counts[4]) * 3 * sizeof(float), &g_vn[0], GL_STATIC_DRAW);
 
 
 	unsigned int vt_vbo = 0;
@@ -378,6 +380,15 @@ void display() {
 		model3 = translate(model3, vec3(cactusX[i], cactusY[i], 0.0f));
 		glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
 		glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1] + g_point_counts[2], g_point_counts[3]);
+
+		//star - hierarchy for cactus
+		model3 = translate(model3, vec3(-cactusX[i], -cactusY[i], 0.0f));
+		model3 = scale(model3, vec3(4.0f, 4.0f, 4.0f));
+		model3 = rotate_y_deg(model3, 90.0f);
+		model3 = translate(model3, vec3(cactusX[i], cactusY[i], 0.0f));
+		model3 = translate(model3, vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
+		glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1] + g_point_counts[2] + g_point_counts[3], g_point_counts[4]);
 	}
 
 
@@ -391,7 +402,6 @@ void display() {
 	model4 = translate(model4, vec3(enemyX, enemyY, 1.5f));
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model4.m);
 	glDrawArrays(GL_TRIANGLES, 0, g_point_counts[0]);
-
 
 
 	//dinosaur
