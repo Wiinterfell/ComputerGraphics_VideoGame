@@ -34,8 +34,8 @@ float rexRotationX = 0.0f;
 float rexRotationY = 0.0f;
 float rexRotationZ = 0.0f;
 
-float cactusX[5] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
-float cactusY[5] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+float cactusX[30] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+float cactusY[30] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 float enemyX = 0.0f;
 float enemyY = 0.0f;
 
@@ -57,6 +57,8 @@ MESH TO LOAD
 #define MESH_NAME_2 "d1.DAE"
 #define MESH_NAME_3 "T_REX.3DS"
 #define MESH_NAME_4 "cactus.3ds"
+
+#define CACTUS_NUMBER 30
 /*----------------------------------------------------------------------------
 ----------------------------------------------------------------------------*/
 
@@ -369,7 +371,7 @@ void display() {
 	//cactus obstacle
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthCactus, heightCactus, 0, GL_RGB, GL_UNSIGNED_BYTE, imageCactus);
 	
-	for (int i = 0; i < 5; i++) 
+	for (int i = 0; i < 30; i++) 
 	{
 		mat4 model3 = identity_mat4();
 		model3 = scale(model3, vec3(0.009f, 0.009f, 0.009f));
@@ -410,16 +412,15 @@ void display() {
 
 void generateObstacles()
 {
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 30; i++)
 	{
 		if (cactusX[i] == 0.0f && cactusY[i] == 0.0f)
 		{
 			int randY = rand() % (3 + 3 + 1) - 3;
-			cactusX[i] = rexX + 50.0f;
+			cactusX[i] = rexX + 50.0f + (i * 10.0f / 5);
 			cactusY[i] = (float) randY;
-			cout << randY << endl;
 		}
-		else if (cactusX[i] <= rexX)
+		else if (cactusX[i] <= rexX + 0.5f)
 		{
 			cactusX[i] = 0.0f;
 			cactusY[i] = 0.0f;
@@ -570,7 +571,7 @@ void keypress(unsigned char key, int x, int y) {
 			rexRotationX = 0.0f;
 			rexRotationY = 0.0f;
 			rexRotationZ = 0.0f;
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 30; i++)
 			{
 				cactusX[i] = 0.0f;
 				cactusY[i] = 0.0f;
