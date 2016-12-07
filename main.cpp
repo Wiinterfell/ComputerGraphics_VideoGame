@@ -385,6 +385,7 @@ void display() {
 		model3 = translate(model3, vec3(-cactusX[i], -cactusY[i], 0.0f));
 		model3 = scale(model3, vec3(4.0f, 4.0f, 4.0f));
 		model3 = rotate_y_deg(model3, 90.0f);
+		model3 = rotate_z_deg(model3, glutGet(GLUT_ELAPSED_TIME));
 		model3 = translate(model3, vec3(cactusX[i], cactusY[i], 0.0f));
 		model3 = translate(model3, vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
