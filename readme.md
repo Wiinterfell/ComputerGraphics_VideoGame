@@ -1,6 +1,6 @@
 # 3D OpenGL T-REX video game
 
-Demo : coming soon
+Demo: https://youtu.be/OHCYEkH9UXM
 
 ## Description
 
