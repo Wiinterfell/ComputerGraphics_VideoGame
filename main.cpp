@@ -34,13 +34,10 @@ float rexRotationX = 0.0f;
 float rexRotationY = 0.0f;
 float rexRotationZ = 0.0f;
 
-float cactusX = 0.0f;
-float cactusY = 0.0f;
+float cactusX[5] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+float cactusY[5] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 float enemyX = 0.0f;
 float enemyY = 0.0f;
-
-GLuint texture[1];
-GLint uniformTexture;
 
 unsigned char* imageCactus;
 unsigned char* imageRex;
@@ -371,12 +368,16 @@ void display() {
 
 	//cactus obstacle
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthCactus, heightCactus, 0, GL_RGB, GL_UNSIGNED_BYTE, imageCactus);
+	
+	for (int i = 0; i < 5; i++) 
+	{
+		mat4 model3 = identity_mat4();
+		model3 = scale(model3, vec3(0.009f, 0.009f, 0.009f));
+		model3 = translate(model3, vec3(cactusX[i], cactusY[i], 0.0f));
+		glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
+		glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1] + g_point_counts[2], g_point_counts[3]);
+	}
 
-	mat4 model3 = identity_mat4();
-	model3 = scale(model3, vec3(0.009f, 0.009f, 0.009f));
-	model3 = translate(model3, vec3(cactusX, cactusY, 0.0f));
-	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
-	glDrawArrays(GL_TRIANGLES, g_point_counts[0] + g_point_counts[1] + g_point_counts[2], g_point_counts[3]);
 
 
 
@@ -409,16 +410,22 @@ void display() {
 
 void generateObstacles()
 {
-	if (cactusX == 0.0f && cactusY == 0.0f)
+	for (int i = 0; i < 5; i++)
 	{
-		cactusX = rexX + 30.0f;
-		cactusY = rexY;
+		if (cactusX[i] == 0.0f && cactusY[i] == 0.0f)
+		{
+			int randY = rand() % (3 + 3 + 1) - 3;
+			cactusX[i] = rexX + 50.0f;
+			cactusY[i] = (float) randY;
+			cout << randY << endl;
+		}
+		else if (cactusX[i] <= rexX)
+		{
+			cactusX[i] = 0.0f;
+			cactusY[i] = 0.0f;
+		}
 	}
-	else if (cactusX <= rexX)
-	{
-		cactusX = 0.0f;
-		cactusY = 0.0f;
-	}
+
 
 	if (enemyX == 0.0f && enemyY == 0.0f)
 	{
@@ -563,8 +570,11 @@ void keypress(unsigned char key, int x, int y) {
 			rexRotationX = 0.0f;
 			rexRotationY = 0.0f;
 			rexRotationZ = 0.0f;
-			cactusX = 0.0f;
-			cactusY = 0.0f;
+			for (int i = 0; i < 5; i++)
+			{
+				cactusX[i] = 0.0f;
+				cactusY[i] = 0.0f;
+			}
 			enemyX = 0.0f;
 			enemyY = 0.0f;
 		}
