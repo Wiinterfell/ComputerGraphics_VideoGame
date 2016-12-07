@@ -430,7 +430,8 @@ void generateObstacles()
 
 	if (enemyX == 0.0f && enemyY == 0.0f)
 	{
-		enemyX = rexX + 30.0f;
+		int randEnemy = rand() % (10 + 1);
+		enemyX = rexX + 60.0f + randEnemy;
 		enemyY = 0.0f;
 	}
 	else if (enemyX <= rexX)
