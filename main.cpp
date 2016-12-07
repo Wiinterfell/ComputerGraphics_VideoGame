@@ -306,7 +306,7 @@ void generateObjectBufferMesh() {
 void print(int x, int y, int z, const char *string)
 {
 	//set the position of the text in the window using the x and y coordinates
-	glRasterPos2f(x, y);
+	glRasterPos3f(x, y, z);
 	//get the length of the string to display
 	int len = (int)strlen(string);
 
@@ -324,8 +324,7 @@ void display() {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(shaderProgramID);
-		string score = to_string((int)(rexX * 10 + 1000));
-		score += addingScore;
+		string score = to_string((int)(rexX * 10 + 1000 + addingScore));
 		string scoreStr = "SCORE: " + score;
 		const char * scoreChar = scoreStr.c_str();
 		print(0.0f, 0.0f, 0.0f, scoreChar);
@@ -512,9 +511,18 @@ void updateScene() {
 		rexZ = 0.0f;
 	}
 
+	//score points
+	int score = rexX * 10 + 1000;
+	score += addingScore;
+	if (score % 1000 == 0)
+	{
+		PlaySound("points.wav", NULL, SND_ASYNC | SND_FILENAME);
+	}
+
 	//game lost
 	if (rexZ <= -5.0f || collision())
 	{
+		PlaySound("dead.wav", NULL, SND_ASYNC | SND_FILENAME);
 		lost = true;
 		cout << "LOST" << endl;
 	}
@@ -593,6 +601,7 @@ void keypress(unsigned char key, int x, int y) {
 		if (jumpSpeed == 0.0f)
 		{
 			jumpSpeed = 0.04f;
+			PlaySound("jump.wav", NULL, SND_ASYNC | SND_FILENAME);
 		}
 		if (lost)
 		{

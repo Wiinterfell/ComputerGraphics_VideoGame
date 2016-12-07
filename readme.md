@@ -5,7 +5,7 @@ Demo : coming soon
 ## Description
 
 The purpose of this project is to create a 3D OpenGL game. You will be a T-Rex and you will have to jump to dodge obstacles. 
-My idea was to create the Google offline mode T-Rex game, in 3 dimensions.
+My idea was to create the [Google offline mode T-Rex game](http://www.trex-game.skipser.com/), in 3 dimensions.
 
 ## Compile the project
 
