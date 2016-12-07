@@ -441,6 +441,28 @@ void generateObstacles()
 	}
 }
 
+bool collision()
+{
+	for (int i = 0; i < 30; i++)
+	{
+		bool x = (cactusX[i] - rexX) < 1.3f;
+		bool y = abs(rexY - cactusY[i]) < 0.1f;
+		bool z = rexZ < 1.0f;
+		if (x && y && z)
+		{
+			return true;
+		}
+	}
+	bool x = abs(rexX - enemyX) < 1.3f;
+	bool z = rexZ > 1.0f;
+	if (x && z)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void updateScene() {
 
 	if (lost)
@@ -481,7 +503,7 @@ void updateScene() {
 	}
 
 	//game lost
-	if (rexZ <= -5.0f)
+	if (rexZ <= -5.0f || collision())
 	{
 		lost = true;
 		cout << "LOST" << endl;
