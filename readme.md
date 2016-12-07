@@ -29,9 +29,13 @@ Do not forget to also add the sounds assets.
 ## Commands
 
 you are a T-Rex in the desert and your purpose is to go as far as you can!
+
 Space: jump.
+
 C: go left.
+
 V: go right.
+
 If you lose, just tap "space" to begin a new game.
 
 ## Previous steps
@@ -41,4 +45,5 @@ To learn a bit about how to render a scene, you can go and see [this project](ht
 ## Release
 
 You can play by downloading the .exe file on the release part of this repository!
+
 Have fun ;)
